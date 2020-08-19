@@ -67,7 +67,7 @@ spec:
   - kustomizeConfig:
       repoRef:
         name: manifests
-        path: stacks/kubernetes
+        path: stacks/kubernetes/generic
     name: kubeflow-apps
   - kustomizeConfig:
       repoRef:

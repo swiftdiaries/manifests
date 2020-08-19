@@ -1,0 +1,76 @@
+name: Deploy Kubeflow (on-merge)
+
+on:
+  pull_request:
+    paths:
+    - 'kfdef/kfctl_istio_dex**'
+    - 'kfdef/kfctl_k8s_istio**'
+    - 'stacks/kubernetes/**'
+    types: [closed]
+
+jobs:
+  # Single user Kubeflow test
+  test-single-user:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout repos - manifests and kfctl
+      - name: Checkout - kubeflow/manifests
+        uses: actions/checkout@v2
+        with:
+          path: manifests
+      - name: Checkout - kubeflow/kfctl
+        uses: actions/checkout@v2
+        with:
+          repository: kubeflow/kfctl
+          path: kfctl
+      # Get kfctl v1.1
+      - name: Get kfctl
+        run: |
+          wget -O kfctl_v1.1.0.tar.gz https://github.com/kubeflow/kfctl/releases/download/v1.1.0/kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
+          mkdir -p {GITHUB_WORKSPACE}/kfctl/kfctl_latest
+          tar -zxvf kfctl_v1.1.0.tar.gz -C ${GITHUB_WORKSPACE}/kfctl/kfctl_latest
+          echo "::add-path::${GITHUB_WORKSPACE}/kfctl/kfctl_latest"
+      # Create a k8s cluster with KinD
+      - name: Setup KinD cluster
+        uses: engineerd/setup-kind@v0.4.0
+        with:
+          version: "v0.7.0"
+     # Setup Kubeflow
+     - name: Setup Kubeflow - single user
+       run: |
+        export CONFIG_URI=${GITHUB_WORKSPACE}/manifests/kfdef/kfctl_k8s_istio.v1.1.0.yaml
+        kfctl apply -f ${CONFIG_URI}
+
+  # Test multi-user Kubeflow
+  test-multi-user:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout repos - manifests and kfctl
+      - name: Checkout - kubeflow/manifests
+        uses: actions/checkout@v2
+        with:
+          path: manifests
+      - name: Checkout - kubeflow/kfctl
+        uses: actions/checkout@v2
+        with:
+          repository: kubeflow/kfctl
+          path: kfctl
+      # Get kfctl v1.1
+      - name: Get kfctl
+        run: |
+          wget -O kfctl_v1.1.0.tar.gz https://github.com/kubeflow/kfctl/releases/download/v1.1.0/kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
+          mkdir -p {GITHUB_WORKSPACE}/kfctl/kfctl_latest
+          tar -zxvf kfctl_v1.1.0.tar.gz -C ${GITHUB_WORKSPACE}/kfctl/kfctl_latest
+          echo "::add-path::${GITHUB_WORKSPACE}/kfctl/kfctl_latest"
+      # Create a k8s cluster with KinD
+      - name: Setup KinD cluster
+        uses: engineerd/setup-kind@v0.4.0
+        with:
+          version: "v0.7.0"
+     # Setup Kubeflow
+     - name: Setup Kubeflow - multi user
+       run: |
+        export CONFIG_URI=${GITHUB_WORKSPACE}/manifests/kfdef/kfctl_istio_dex.v1.1.0.yaml
+        kfctl apply -f ${CONFIG_URI}
