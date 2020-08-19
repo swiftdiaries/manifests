@@ -3,6 +3,7 @@ name: Deploy Kubeflow (on-merge)
 on:
   pull_request:
     paths:
+    - '.github/workflows/vanilla_k8s_postsubmits.yaml'
     - 'kfdef/kfctl_istio_dex**'
     - 'kfdef/kfctl_k8s_istio**'
     - 'stacks/kubernetes/**'
