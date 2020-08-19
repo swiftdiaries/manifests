@@ -29,9 +29,8 @@ jobs:
       - name: Get kfctl
         run: |
           wget -O kfctl_v1.1.0.tar.gz https://github.com/kubeflow/kfctl/releases/download/v1.1.0/kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
-          mkdir -p {GITHUB_WORKSPACE}/kfctl/kfctl_latest
-          tar -zxvf kfctl_v1.1.0.tar.gz -C ${GITHUB_WORKSPACE}/kfctl/kfctl_latest
-          echo "::add-path::${GITHUB_WORKSPACE}/kfctl/kfctl_latest"
+          tar -zxvf kfctl_v1.1.0.tar.gz
+          echo "::add-path::kfctl"
       # Create a k8s cluster with KinD
       - name: Setup KinD cluster
         uses: engineerd/setup-kind@v0.4.0
@@ -62,9 +61,8 @@ jobs:
       - name: Get kfctl
         run: |
           wget -O kfctl_v1.1.0.tar.gz https://github.com/kubeflow/kfctl/releases/download/v1.1.0/kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
-          mkdir -p {GITHUB_WORKSPACE}/kfctl/kfctl_latest
-          tar -zxvf kfctl_v1.1.0.tar.gz -C ${GITHUB_WORKSPACE}/kfctl/kfctl_latest
-          echo "::add-path::${GITHUB_WORKSPACE}/kfctl/kfctl_latest"
+          tar -zxvf kfctl_v1.1.0.tar.gz
+          echo "::add-path::kfctl"
       # Create a k8s cluster with KinD
       - name: Setup KinD cluster
         uses: engineerd/setup-kind@v0.4.0
